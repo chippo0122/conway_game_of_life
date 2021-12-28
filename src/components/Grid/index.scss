@@ -1,0 +1,17 @@
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    .box {
+        width: 15px;
+        height: 15px;
+        border: 1px solid red;
+    }
+    
+    .alive {
+        background: #222;
+    }
+    
+    .dead {
+        background-color: #fff;
+    }
+}
