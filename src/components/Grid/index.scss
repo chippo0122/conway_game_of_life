@@ -2,9 +2,13 @@
     display: flex;
     flex-wrap: wrap;
     .box {
-        width: 15px;
-        height: 15px;
-        border: 1px solid red;
+        width: 10px;
+        height: 10px;
+        box-shadow: 0 0 1px #222;
+
+        &:hover {
+            background-color: rgb(212, 78, 78);
+        }
     }
     
     .alive {
