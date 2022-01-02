@@ -4,7 +4,7 @@ import Grid from '../Grid'
 export const stateContext = createContext();
 
 const INITIAL_STATE = {
-    speed: 100,
+    speed: 150,
     cols: 100,
     rows: 50,
     generations: 0,
@@ -28,7 +28,7 @@ const reducer = (state, action) => {
             const seedArr = [...state.gridFull];
             for (let i = 0; i < state.rows; i++) {
                 for (let j = 0; j < state.cols; j++) {
-                    const sep = Math.floor(Math.random() * 8);
+                    const sep = Math.floor(Math.random() * 5);
                     if (sep === 1) {
                         seedArr[i][j] = true;
                     }
@@ -39,33 +39,34 @@ const reducer = (state, action) => {
         case 'PLAY':
             const { gridFull, rows, cols } = state;
             let g = [...gridFull];
-            let gPost = [...gridFull];
+            let gPost = JSON.parse(JSON.stringify(gridFull));
+
             for (let i = 0; i < rows; i++) {
                 for (let j = 0; j < cols; j++) {
                     let count = 0;
-                    if (i - 1 >= 0) {
+                    if (i > 0) {
                         if (g[i - 1][j]) count++;
                     }
-                    if (i - 1 >= 0 && j - 1 >= 0) {
-                        if (g[i - 1][j - 1]) count++;
-                    }
-                    if (i - 1 >= 0 && j + 1 < cols) {
+                    if (i > 0 && j < cols - 1) {
                         if (g[i - 1][j + 1]) count++;
                     }
-                    if (j - 1 >= 0) {
-                        if (g[i][j - 1]) count++;
+                    if (i > 0 && j > 0) {
+                        if (g[i - 1][j - 1]) count++;
                     }
-                    if (j + 1 < cols) {
-                        if (g[i][j + 1]) count++;
-                    }
-                    if (i + 1 < rows) {
+                    if (i < rows - 1) {
                         if (g[i + 1][j]) count++;
                     }
-                    if (i + 1 < rows && j - 1 >= 0) {
-                        if (g[i + 1][j - 1]) count++
+                    if (i < rows - 1 && j > 0) {
+                        if (g[i + 1][j - 1]) count++;
                     }
-                    if (i + 1 < rows && j + 1 < cols) {
-                        if (g[i + 1][j + 1]) count++
+                    if (i < rows - 1 && j < cols - 1) {
+                        if (g[i + 1][j + 1]) count++;
+                    }
+                    if (j > 0) {
+                        if (g[i][j - 1]) count++;
+                    }
+                    if (j < cols - 1) {
+                        if (g[i][j + 1]) count++;
                     }
 
                     if (g[i][j]) {
@@ -101,9 +102,9 @@ export default function Main() {
     }, [])
 
     useEffect(() => {
-        if(isActive) {
+        if (isActive) {
             const interval = setInterval(() => {
-                dispatch({type: 'PLAY'});
+                dispatch({ type: 'PLAY' });
             }, state.speed)
             setTimer(interval);
         } else {
@@ -127,14 +128,20 @@ export default function Main() {
 
     return (
         <div className='main container mx-auto'>
-            <button className='btn btn-primary' onClick={triggerPlay}>PLAY</button>
-            <button className='btn btn-danger' onClick={stopPlay}>STOP</button>
-            <button className='btn btn-warning' onClick={clear}>CLEAR</button>
-            <button className='btn btn-primary' onClick={() => { dispatch({ type: 'SET_SEED' }) }}>SEED</button>
+            <div className='d-flex justify-content-center mb-3'>
+                <div className="btn-group me-2">
+                    <button className='btn btn-primary' onClick={triggerPlay}>PLAY</button>
+                    <button className='btn btn-danger' onClick={stopPlay}>STOP</button>
+                    <button className='btn btn-outline-warning' onClick={clear}>CLEAR</button>
+                </div>
+                <div className="btn-group">
+                    <button className='btn btn-outline-success' onClick={() => { dispatch({ type: 'SET_SEED' }) }}>SEED</button>
+                </div>
+            </div>
             <stateContext.Provider value={state}>
                 <Grid dispatch={dispatch} />
             </stateContext.Provider>
-            <h2 className='fs-4'>Generations: {state.generations}</h2>
+            <h2 className='fs-5 mt-3'>Generations: {state.generations}</h2>
         </div>
     )
 }
